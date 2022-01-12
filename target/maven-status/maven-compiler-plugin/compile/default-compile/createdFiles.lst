@@ -1,0 +1,5 @@
+pageobject\PageIndex.class
+pageobject\PageProceedOrder.class
+shopizer\EBrowser.class
+shopizer\ToolBox.class
+pageobject\PageCheckout.class
