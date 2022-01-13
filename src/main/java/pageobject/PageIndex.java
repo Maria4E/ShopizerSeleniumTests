@@ -70,14 +70,15 @@ public class PageIndex {
 		
 	}
 	
-	public PageProceedOrder goToPageProceedOrder(WebDriver driver) {
+	public PageProceedOrder goToPageProceedOrder(WebDriver driver) throws InterruptedException {
 		
 		Actions action = new Actions(driver);
 		WebDriverWait wait = new WebDriverWait(driver, 10);
 		
 		wait.until(ExpectedConditions.visibilityOf(cartLink));
 		action.moveToElement(cartLink).build().perform();
-		wait.until(ExpectedConditions.elementToBeClickable(proceedToPaymentLink));
+		Thread.sleep(500);
+		//wait.until(ExpectedConditions.elementToBeClickable(proceedToPaymentLink));
 		action.moveToElement(proceedToPaymentLink).build().perform();
 		proceedToPaymentLink.click();
 		return PageFactory.initElements(driver, PageProceedOrder.class);
