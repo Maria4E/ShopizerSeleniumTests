@@ -104,6 +104,7 @@ public class AUT002_VerifyTableCategoryTest extends AbstractTest {
 			wait.until(ExpectedConditions.elementToBeClickable(categoryTable.getItemDetailsLinks().get(i)));
 			//js.executeScript("arguments[0].scrollIntoView(true);", categoryTable.getItemDetailsLinks().get(i));
 			PageProductDetails productDetails = categoryTable.goToProductDetails(driver, i);
+			Thread.sleep(500);
 			//Meme image?
 			Assert.assertTrue("Image differente dans le detail du produit", initialItemsImagesSrc.get(i).equals(productDetails.getProductImage().getAttribute("src")));
 			//Meme nom?
