@@ -53,6 +53,7 @@ public class AUT001_UseCartTest extends AbstractTest {
 		Assert.assertTrue("Erreur d'ajout du produit au panier", pageIndex.getCartObjectsNr().getText().equals("(1)"));
 		
 		log.info("***3. Selection du panier et clic sur [Paiement]***");
+		Thread.sleep(500);
 		PageProceedOrder proceedOrder = pageIndex.goToPageProceedOrder(driver);
 		Assert.assertEquals("La page Passez votre commande n'a pas été atteinte", "Revoir votre commande", proceedOrder.getPageTitle().getText().trim());
 		
