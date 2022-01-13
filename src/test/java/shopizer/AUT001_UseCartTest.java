@@ -34,17 +34,19 @@ public class AUT001_UseCartTest extends AbstractTest {
 		
 		log.info("***1. Acces a Shopizer***");
 		driver.get(mainPageAdress);
-		Assert.assertEquals("La page ne s'est pas ouverte correctement.", mainPageAdress + "/shop", driver.getCurrentUrl());
+		Assert.assertTrue("La page ne s'est pas ouverte correctement", driver.getCurrentUrl().contains(mainPageAdress));
 		
 		log.info("***2. Ajout d'un produit aléatoire dans le panier***");
 		PageIndex pageIndex = PageFactory.initElements(driver, PageIndex.class);
 		//Formattage du prix attendu
-		List<String> addedArticleInfo = pageIndex.addRandomArticleToCart(driver);
+		List<String> addedArticleInfo = pageIndex.addRandomArticleToCart(driver, wait);
 		Double expectedPrice = Double.parseDouble(addedArticleInfo.get(1));
 		Double doubleExpectedPrice = expectedPrice * 2;
 		String formattedExpectedPrice = NumberFormat.getNumberInstance(Locale.US).format(expectedPrice);
 		String formattedDoubleExpectedPrice = NumberFormat.getNumberInstance(Locale.US).format(doubleExpectedPrice);
 		
+		//wait.until(ExpectedConditions.invisibilityOf(pageIndex.getLoadingOverlay()));
+		Thread.sleep(500);
 		wait.until(ExpectedConditions.visibilityOf(pageIndex.getCartLink()));
 		js.executeScript("arguments[0].scrollIntoView();", pageIndex.getCartLink());
 		wait.until(ExpectedConditions.visibilityOf(pageIndex.getCartObjectsNr()));
@@ -52,7 +54,7 @@ public class AUT001_UseCartTest extends AbstractTest {
 		
 		log.info("***3. Selection du panier et clic sur [Paiement]***");
 		PageProceedOrder proceedOrder = pageIndex.goToPageProceedOrder(driver);
-		Assert.assertEquals("La page Passez votre commande n'a pas été atteinte", "Passez votre commande", driver.getTitle());
+		Assert.assertEquals("La page Passez votre commande n'a pas été atteinte", "Revoir votre commande", proceedOrder.getPageTitle().getText().trim());
 		
 		log.info("***4. Verification de la presence du produit ajoute sur la page***");
 		wait.until(ExpectedConditions.elementToBeClickable(proceedOrder.getCheckOutButton()));

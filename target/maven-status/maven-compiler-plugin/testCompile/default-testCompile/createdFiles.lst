@@ -1,2 +1,3 @@
-shopizer\AUT001_UseCartTest.class
 shopizer\AbstractTest.class
+shopizer\AUT001_UseCartTest.class
+shopizer\AUT002_VerifyTableCategoryTest.class

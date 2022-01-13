@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Random;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
@@ -27,6 +28,12 @@ public class PageIndex {
 	@FindBy (xpath = "//ul[@id='miniCartDetails']//a[contains(text(),'Paiement')]")
 	WebElement proceedToPaymentLink;
 	
+	@FindBy (xpath = "//div[contains(@class, 'mainmenu')]//a[contains(@href, 'category/tables')]")
+	WebElement tablesCategoryLink;
+	
+	@FindBy (xpath = "//div[@class='loadingoverlay']")
+	WebElement loadingOverlay;
+	
 	
 	
 	public WebElement getCartLink() {
@@ -36,17 +43,28 @@ public class PageIndex {
 	public WebElement getCartObjectsNr() {
 		return cartObjectsNr;
 	}
+	
+	public WebElement getLoadingOverlay() {
+		return loadingOverlay;
+	}
 
-	public List<String> addRandomArticleToCart(WebDriver driver) {
+	public List<String> addRandomArticleToCart(WebDriver driver, WebDriverWait wait) {
 		Random rand = new Random();
-		WebDriverWait wait = new WebDriverWait(driver, 10);
-		
-		WebElement articleToAdd = addToCartLinks.get(rand.nextInt(addToCartLinks.size()));
+		wait.until(ExpectedConditions.elementToBeClickable(addToCartLinks.get(addToCartLinks.size()-1)));
+		int randomElement = rand.nextInt(addToCartLinks.size());
+		WebElement articleToAdd = addToCartLinks.get(randomElement);
+	
+		if(randomElement > 3) {
+			((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(false);", articleToAdd);
+		}
 		String articleToAddId = articleToAdd.getAttribute("productid");
 		WebElement articleToAddDiv = driver.findElement(By.xpath("//div[@data-id='"+articleToAddId+"']"));
 		List<String> articleToAddInfo = new ArrayList<>();
 		articleToAddInfo.add(0, articleToAddDiv.getAttribute("item-name"));
 		articleToAddInfo.add(1, articleToAddDiv.getAttribute("item-price"));
+		
+		Actions action = new Actions(driver);
+		action.moveToElement(articleToAdd).perform();
 		articleToAdd.click();
 		return articleToAddInfo;
 		
@@ -58,11 +76,21 @@ public class PageIndex {
 		WebDriverWait wait = new WebDriverWait(driver, 10);
 		
 		wait.until(ExpectedConditions.visibilityOf(cartLink));
-		action.moveToElement(cartLink).perform();
-		wait.until(ExpectedConditions.visibilityOf(proceedToPaymentLink));
-		action.moveToElement(proceedToPaymentLink).perform();
+		action.moveToElement(cartLink).build().perform();
+		wait.until(ExpectedConditions.elementToBeClickable(proceedToPaymentLink));
+		action.moveToElement(proceedToPaymentLink).build().perform();
 		proceedToPaymentLink.click();
 		return PageFactory.initElements(driver, PageProceedOrder.class);
+	}
+	
+	public PageCategoryTable goToPageCategoryTable(WebDriver driver) {
+		WebDriverWait wait = new WebDriverWait(driver, 10);
+		wait.until(ExpectedConditions.elementToBeClickable(tablesCategoryLink));
+		Actions action = new Actions(driver);
+		action.moveToElement(tablesCategoryLink).perform();
+		tablesCategoryLink.click();
+		
+		return PageFactory.initElements(driver, PageCategoryTable.class);
 	}
 	
 }

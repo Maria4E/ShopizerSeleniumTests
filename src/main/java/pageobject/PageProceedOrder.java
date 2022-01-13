@@ -33,6 +33,13 @@ public class PageProceedOrder {
 	
 	@FindBy (xpath = "//a[contains(@href, 'checkout')]")
 	WebElement proceedToCheckOutButton;
+	
+	@FindBy (xpath = "//h1[@class='entry-title']")
+	WebElement pageTitle;
+	
+	public WebElement getPageTitle() {
+		return pageTitle;
+	}
 
 	public WebElement getOrderListTable() {
 		return orderListTable;
